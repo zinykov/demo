@@ -1,0 +1,28 @@
+# -----------------------------------------------------------
+# Core Configuration: Standardize line endings (recommended)
+# -----------------------------------------------------------
+* text=auto
+
+# Enforce Unix-style line endings (LF) for all source code files
+*.java    text eol=lf
+*.xml     text eol=lf
+*.properties text eol=lf
+*.sql     text eol=lf
+*.css     text eol=lf
+*.js      text eol=lf
+*.json    text eol=lf
+*.md      text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+
+# -----------------------------------------------------------
+# Binary files: Explicitly mark files that are not text
+# -----------------------------------------------------------
+*.jar binary
+*.class binary
+*.png binary
+*.jpg binary
+*.svg binary
+*.pdf binary
+*.zip binary
