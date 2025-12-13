@@ -1,7 +1,8 @@
 # -----------------------------------------------------------
 # Maven Project Specific Ignores (Standard Java Build)
 # -----------------------------------------------------------
-target         # Ignore the entire 'target' directory where Maven puts compiled code, JARs, etc.
+target/        # Ignore the entire 'target' directory where Maven puts compiled code, JARs, etc.
+target/classes/
 pom.xml.tag    # Backup files created by some XML editors
 pom.xml.bak
 pom.xml.versions
