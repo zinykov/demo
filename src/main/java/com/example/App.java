@@ -16,7 +16,6 @@ public final class App {
 
     private App() {
         PropertiesLoader loader = new PropertiesLoader("application.properties");
-
         DB_URL = loader.getProperty("database.url");
         USER = loader.getProperty("database.user");
         PASS = loader.getProperty("database.password");
@@ -26,10 +25,10 @@ public final class App {
     public static void main(String[] args) {
         //System.out.println("Hello World!");
         new App();
-        connect_psql();
+        query_psql();
     }
 
-    private static void connect_psql () {
+    private static void query_psql() {
         // The driver is automatically loaded in Java 17+
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
             System.out.println("Connection to PostgreSQL established.");
