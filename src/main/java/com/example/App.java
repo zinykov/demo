@@ -6,12 +6,16 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
-public final class App {
+@CommandLine.Command(name = "myApp", description = "Postgesql to cli")
+public final class App implements Runnable {
     // Database connection details
     private static String DB_URL;
     private static String USER;
     private static String PASS;
+    @Option(names = {"--query", "-q", "/q", }, description = "SQL file path")
     private static String SQL_SCRIPT_FILE;
 
     private App() {
@@ -19,13 +23,6 @@ public final class App {
         DB_URL = loader.getProperty("database.url");
         USER = loader.getProperty("database.user");
         PASS = loader.getProperty("database.password");
-        SQL_SCRIPT_FILE = loader.getProperty("database.query");
-    }
-    
-    public static void main(String[] args) {
-        //System.out.println("Hello World!");
-        new App();
-        query_psql();
     }
 
     private static void query_psql() {
@@ -56,5 +53,14 @@ public final class App {
             System.err.println("Error running SQL script: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+        query_psql();
+    }
+    
+    public static void main(String[] args) {
+        new CommandLine(new App()).execute(args);
     }
 }

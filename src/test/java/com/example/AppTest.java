@@ -13,7 +13,7 @@ class AppTest {
      */
     @Test
     void testApp() {
-        App.main(null);
+        App.main(new String[]{"--query","SELECT_products.sql"});
         assertEquals(1, 1);
     }
 }
