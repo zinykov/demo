@@ -6,29 +6,34 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 import picocli.CommandLine;
+import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Spec;
 
-@CommandLine.Command(name = "myApp", description = "Postgesql to cli")
-public final class App implements Runnable {
+@CommandLine.Command(name = "App", mixinStandardHelpOptions = true, version = "1.0", description = "Postgesql to cli")
+public final class App implements Callable<Integer> {
     // Database connection details
-    private static String DB_URL;
-    private static String USER;
-    private static String PASS;
+    private String DB_URL;
+    private String USER;
+    private String PASS;
     @Option(names = {"--query", "-q", "/q", }, description = "SQL file path")
-    private static String SQL_SCRIPT_FILE;
+    private String SQL_SCRIPT_FILE;
 
-    private App() {
+    @Spec CommandSpec spec;
+
+    public App() {
         PropertiesLoader loader = new PropertiesLoader("application.properties");
         DB_URL = loader.getProperty("database.url");
         USER = loader.getProperty("database.user");
         PASS = loader.getProperty("database.password");
     }
 
-    private static void query_psql() {
+    private void query_psql() {
         // The driver is automatically loaded in Java 17+
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
-            System.out.println("Connection to PostgreSQL established.");
+            spec.commandLine().getOut().println("Connection to PostgreSQL established.");
 
             // Initialize the ScriptRunner
             ScriptRunner runner = new ScriptRunner(conn);
@@ -44,23 +49,29 @@ public final class App implements Runnable {
                 runner.runScript(reader);
             }
 
-            System.out.println("SQL script executed successfully.");
+            spec.commandLine().getOut().println("SQL script executed successfully.");
 
         } catch (SQLException e) {
-            System.err.println("Database error: " + e.getMessage());
+            spec.commandLine().getErr().println("Database error: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("Error running SQL script: " + e.getMessage());
+            spec.commandLine().getErr().println("Error running SQL script: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     @Override
-    public void run() {
+    public Integer call() {
+        if (SQL_SCRIPT_FILE == null) {
+            spec.commandLine().getOut().println("No arguments provided. Displaying help.");
+            spec.commandLine().usage(spec.commandLine().getOut());
+            return 0;
+        }
         query_psql();
+        return 0;
     }
     
     public static void main(String[] args) {
-        new CommandLine(new App()).execute(args);
+        System.exit(new CommandLine(new App()).execute(args));
     }
 }

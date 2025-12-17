@@ -10,6 +10,7 @@ pom.xml.releaseBackup
 release.properties
 dependency-reduced-pom.xml
 build/         # Another common build output directory name
+*.jar
 
 # -----------------------------------------------------------
 # VS Code Specific Ignores
